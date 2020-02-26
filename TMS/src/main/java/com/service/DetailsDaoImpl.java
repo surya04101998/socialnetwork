@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import org.springframework.stereotype.Service;
 
 import com.model.Details;
-import com.util.DBUtil;
 
 
 @Service
@@ -17,7 +16,7 @@ public class DetailsDaoImpl implements DetailsDao {
 	@Override
 	public void AddDetails(Details details) {
 
-		Connection conn=DBUtil.provideConnection();
+		Connection conn=DBUtil.getConnection();
 		
 		try {
 			PreparedStatement ps=conn.prepareStatement("insert into details values(?,?,?,?)");
@@ -44,10 +43,10 @@ public class DetailsDaoImpl implements DetailsDao {
 	public boolean authentication(Details details) {
 		
 		
-		Connection conn=DBUtil.provideConnection();
+		Connection conn=DBUtil.getConnection();
 		
 		try {
-			PreparedStatement ps=conn.prepareStatement("select password from details where name=?;");
+			PreparedStatement ps=conn.prepareStatement("select password from project where username=?;");
 			
 			ps.setString(1, details.getName());
 			
@@ -55,7 +54,10 @@ public class DetailsDaoImpl implements DetailsDao {
 			
 			if(rs.next()) {
 				
-				return rs.getString("password").equals(details.getName());
+				if( rs.getString("password").equals(details.getPassword())) {
+					System.out.println("success");
+					return true;
+				}
 			}
 			
 		} catch (SQLException e) {

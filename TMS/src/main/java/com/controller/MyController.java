@@ -1,6 +1,7 @@
 package com.controller;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.model.Details;
+//import com.mysql.jdbc.PreparedStatement;
 import com.service.DBUtil;
 import com.service.DetailsDao;
 
@@ -31,11 +33,11 @@ public class MyController {
 	public String login(@ModelAttribute("details")Details details,ModelMap map) {
 		
 		if(detailsDao.authentication(details)) {
-			return "loginpage";
+			return "success";
 		}
 		
 		
-		return "";
+		return "loginpage";
 		
 	}
 	
@@ -47,22 +49,35 @@ public class MyController {
 	@RequestMapping(value="/success",method=RequestMethod.POST)
 	public String success(@ModelAttribute("signup")Details details) {
 		
-		try {
+		
 			System.out.println("asdasd");
 			Connection conn=DBUtil.getConnection();
-			Statement st=conn.createStatement();
-			String name=details.getName();
-			String pass=details.getPassword();
-			String email=details.getEmailid();
-			int res=st.executeUpdate("insert into users values("+name+","+pass+","+email+")");
-			if(res>0) {
-				return "success";
+			System.out.println("asdasdas");
+			
+			try {
+				
+				String name=details.getName();
+				String pass=details.getPassword();
+				String email=details.getEmailid();
+				PreparedStatement st=conn.prepareStatement("insert into project values(?,?,?,?);");
+				//PreparedStatement ps=conn.prepareStatement("insert into details values(?,?,?,?)");
+
+				st.setInt(1,1);
+				st.setString(2, name);
+				st.setString(3, pass);
+				st.setString(4, email);
+				
+				int res=st.executeUpdate();
+				if(res>0) {
+					return "success";
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 			
-		} catch (ClassNotFoundException | SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			
+		
 		return "SignUp";
 	}
 	
