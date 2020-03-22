@@ -1,0 +1,15 @@
+<script>
+document.querySelector('.share-button').addEventListener('click', function() {
+    if(navigator.share) {
+      navigator.share({
+        title: 'COVID awareness site'
+        text: 'Check out this great website about the corona virus awareness'
+        url: 'https://staysafecovid.herokuapp.com'
+      })
+      .then(() => console.log('Share complete'))
+      .error((error) => console.error('Could not share at this time', error))
+    }
+  });
+</script>   
+
+  <button class="share-button">Share with the Web Share API</button>
